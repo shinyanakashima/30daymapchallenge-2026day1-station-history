@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>駅のあった北海道 1950–2025</title>
+    <meta name="description" content="1950年から2025年まで、北海道の駅の開業・改称・廃止を年スライダーでたどる地図。#30DayMapChallenge Points" />
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <header id="title">
+      <h1>駅のあった北海道</h1>
+      <p class="sub">1950–2025 / #30DayMapChallenge Day 1: Points</p>
+    </header>
+
+    <section id="panel" aria-label="年代の操作">
+      <div class="yearrow">
+        <button id="play" type="button" aria-label="再生">▶</button>
+        <div class="year"><span id="year">1950</span><small>年</small></div>
+        <div class="counts">
+          <div><span class="dot active"></span>営業中 <b id="n-active">0</b></div>
+          <div><span class="dot past"></span>廃止 <b id="n-past">0</b></div>
+          <div class="hint">物理的な駅単位</div>
+        </div>
+      </div>
+      <input id="slider" type="range" min="1950" max="2025" step="1" value="1950" aria-label="表示年" />
+      <div class="ticks"><span>1950</span><span>1975</span><span>2000</span><span>2025</span></div>
+      <div class="opts">
+        <label><input id="show-past" type="checkbox" checked /> 過去の駅</label>
+        <label><input id="show-lines" type="checkbox" checked /> 路線</label>
+        <span class="regions">
+          <button type="button" data-region="all">全道</button>
+          <button type="button" data-region="tokachi">十勝</button>
+          <button type="button" data-region="sapporo">札幌</button>
+          <button type="button" data-region="hakodate">函館</button>
+        </span>
+      </div>
+      <p class="note" id="note-now"></p>
+    </section>
+
+    <aside id="detail" hidden>
+      <button id="detail-close" type="button" aria-label="閉じる">×</button>
+      <div id="detail-body"></div>
+    </aside>
+
+    <footer id="credit">
+      出典：国土交通省 国土数値情報「鉄道時系列データ」(N05, 2025年度版)を加工 ／ 背景：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル（白地図）</a>
+      ／ <a href="https://github.com/shinyanakashima/30daymapchallenge-2026day1-station-history" target="_blank" rel="noopener">データ処理と注意事項</a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
