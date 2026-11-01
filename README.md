@@ -1,4 +1,4 @@
-# 駅のあった北海道 1950–2025
+# Hokkaido, Where the Stations Were（駅のあった北海道）1950–2025
 
 \#30DayMapChallenge 2026 Day 1「Points」の作品。
 

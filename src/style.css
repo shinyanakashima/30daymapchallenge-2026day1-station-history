@@ -32,7 +32,7 @@ button:hover { border-color: rgba(255, 255, 255, 0.35); }
   left: 16px;
   pointer-events: none;
 }
-#title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: 0.08em; }
+#title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: 0.02em; }
 #title .sub { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
 
 #panel {
