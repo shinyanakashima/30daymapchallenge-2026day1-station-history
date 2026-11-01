@@ -67,7 +67,7 @@ const map = new maplibregl.Map({
         tileSize: 256,
         minzoom: 5,
         maxzoom: 14,
-        attribution: '地理院タイル',
+        attribution: 'GSI Tiles',
       },
     },
     layers: [
@@ -142,7 +142,7 @@ function render() {
   if (selected !== null) showDetail(selected);
   $('note-now').textContent =
     year === YEAR_MAX
-      ? '2025年はデータ基準時点（2025年末）の状態です。2026年以降の変化は含みません。'
+      ? '2025 shows the data as of the end of 2025. Changes from 2026 onward are not included.'
       : '';
 }
 
@@ -155,12 +155,12 @@ function stop() {
   if (timer !== null) window.clearInterval(timer);
   timer = null;
   playBtn.textContent = '▶';
-  playBtn.setAttribute('aria-label', '再生');
+  playBtn.setAttribute('aria-label', 'Play');
 }
 function play() {
   if (year >= YEAR_MAX) setYear(YEAR_MIN);
   playBtn.textContent = '❚❚';
-  playBtn.setAttribute('aria-label', '一時停止');
+  playBtn.setAttribute('aria-label', 'Pause');
   timer = window.setInterval(() => {
     if (year >= YEAR_MAX) return stop();
     setYear(year + 1);
@@ -179,16 +179,16 @@ function showDetail(id: number) {
   const lines = [...new Set(s.records.map((x) => x.line))];
   const act = activeRecords(s, year);
   let state = '';
-  if (st === 'active') state = `${year}年：営業中（${[...new Set(act.map((x) => x.line))].join('・')}）`;
+  if (st === 'active') state = `${year}: in service (${[...new Set(act.map((x) => x.line))].join(', ')})`;
   else if (st === 'past')
-    state = s.closedYear !== null && s.closedYear <= year ? `${year}年：廃止済み（${s.closedYear}年に廃止）` : `${year}年：記録なし`;
-  else if (st === 'unknown') state = `${year}年：存続期間不明`;
-  else state = `${year}年：開業前`;
+    state = s.closedYear !== null && s.closedYear <= year ? `${year}: closed (in ${s.closedYear})` : `${year}: no record`;
+  else if (st === 'unknown') state = `${year}: period unknown`;
+  else state = `${year}: not yet open`;
 
   let summary: string;
-  if (s.closedYear !== null) summary = `データ上の最終年 ${s.closedYear - 1}年 → 廃止 ${s.closedYear}年`;
-  else if (s.records.some((x) => x.e === 9999)) summary = '2025年末時点で営業中';
-  else summary = '終了年不明のレコードを含む';
+  if (s.closedYear !== null) summary = `Last year in data: ${s.closedYear - 1} → closed ${s.closedYear}`;
+  else if (s.records.some((x) => x.e === 9999)) summary = 'In service as of the end of 2025';
+  else summary = 'Includes records with an unknown end year';
 
   const rows = s.records
     .map(
@@ -196,10 +196,10 @@ function showDetail(id: number) {
         <td>${esc(x.name)}</td>
         <td>${esc(x.line)}<br><span class="op">${esc(x.op)}</span></td>
         <td>${esc(yearLabel(x))}</td>
-        <td>${x.open === null || x.open === 999 ? '不明' : x.open}</td>
+        <td>${x.open === null || x.open === 999 ? 'unknown' : x.open}</td>
       </tr>${
         x.yearNote || x.posNote
-          ? `<tr class="sub"><td colspan="4">${esc([x.posNote, x.yearNote].filter(Boolean).join('；'))}</td></tr>`
+          ? `<tr class="sub"><td colspan="4">${esc([x.posNote === '駅位置推定' ? 'Location estimated in source data' : x.posNote, x.yearNote].filter(Boolean).join('; '))}</td></tr>`
           : ''
       }`,
     )
@@ -207,16 +207,16 @@ function showDetail(id: number) {
 
   detailBody.innerHTML = `
     <h2>${esc(r.name)}<span class="status ${st}"></span></h2>
-    ${names.length > 1 ? `<p class="aka">記録上の駅名：${names.map(esc).join(' → ')}</p>` : ''}
+    ${names.length > 1 ? `<p class="aka">Names on record: ${names.map(esc).join(' → ')}</p>` : ''}
     <p class="state">${esc(state)}</p>
-    <p class="summary">${esc(summary)}　/ 路線：${lines.map(esc).join('・')}</p>
+    <p class="summary">${esc(summary)} / Lines: ${lines.map(esc).join(', ')}</p>
     <table>
-      <thead><tr><th>駅名</th><th>路線・事業者</th><th>設置期間</th><th>供用開始</th></tr></thead>
+      <thead><tr><th>Name</th><th>Line / operator</th><th>Record period</th><th>Opened</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p class="fine">設置期間の終わりの年は「変更・廃止の前年」です（例：1986 → 1987年に廃止または変更）。
-    路線別・期間別のレコードを、関係IDと位置・駅名から一つの駅にまとめています。</p>
-    ${s.flags.length ? `<p class="fine warn">確認事項：${s.flags.map(esc).join('；')}</p>` : ''}
+    <p class="fine">The end of a record period is the year before the change or closure (e.g. 1986 → closed or changed in 1987).
+    Records per line and period are merged into one station by relation ID, location and name.</p>
+    ${s.flags.length ? `<p class="fine warn">To check: ${s.flags.map(esc).join('; ')}</p>` : ''}
   `;
   detail.hidden = false;
 }

@@ -99,10 +99,10 @@ export function displayRecord(s: Station, year: number): StationRecord {
 }
 
 export function yearLabel(r: StationRecord): string {
-  const b = r.b === 999 || r.b === null ? '不明' : String(r.b);
+  const b = r.b === 999 || r.b === null ? 'unknown' : String(r.b);
   let e: string;
-  if (r.e === 9999) e = '存続（2025年末時点）';
-  else if (r.e === 999 || r.e === null) e = '不明';
+  if (r.e === 9999) e = 'present (end of 2025)';
+  else if (r.e === 999 || r.e === null) e = 'unknown';
   else e = `${r.e}`;
-  return `${b}〜${e}`;
+  return `${b}–${e}`;
 }

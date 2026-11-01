@@ -151,21 +151,21 @@ def resolve_years(recs):
                 prev = group[i - 1] if i > 0 else None
                 if prev and prev["e"] not in (None, UNKNOWN, ONGOING):
                     b = prev["e"] + 1
-                    notes.append("開始年不明：同じ関係IDの前レコード終了年の翌年とした")
+                    notes.append("Start year unknown: set to the year after the previous record with the same relation ID ended")
                 elif r["open"] not in (None, UNKNOWN) and r["open"] > YEAR_MIN:
                     b = r["open"]
-                    notes.append("開始年不明：供用開始年を用いた")
+                    notes.append("Start year unknown: used the opening year (N05_004)")
                 else:
                     b = YEAR_MIN
-                    notes.append("開始年不明：1950年から表示")
+                    notes.append("Start year unknown: shown from 1950")
             if e in (None, UNKNOWN):
                 nxt = group[i + 1] if i + 1 < len(group) else None
                 if nxt and nxt["b"] not in (None, UNKNOWN):
                     e = nxt["b"] - 1
-                    notes.append("終了年不明：同じ関係IDの次レコード開始年の前年とした")
+                    notes.append("End year unknown: set to the year before the next record with the same relation ID began")
                 else:
                     e = None
-                    notes.append("終了年不明：期間不明として別表示")
+                    notes.append("End year unknown: shown as period unknown")
             elif e == ONGOING:
                 e = YEAR_MAX
             b = max(b, YEAR_MIN)
@@ -255,13 +255,13 @@ def main():
         )
         flags = []
         if spread > REVIEW_SPREAD_M:
-            flags.append(f"統合した点の最大距離 {spread:.0f}m")
+            flags.append(f"Merged points are up to {spread:.0f} m apart")
         # 期間の空白
         known = sorted((r["effB"], r["effE"]) for r in rs if r["effE"] is not None)
         cover_end = None
         for b, e in known:
             if cover_end is not None and b > cover_end + 1:
-                flags.append(f"{cover_end + 1}〜{b - 1}年にレコードの空白")
+                flags.append(f"No records for {cover_end + 1}–{b - 1}")
             cover_end = e if cover_end is None else max(cover_end, e)
         for f in flags:
             review.append({"sid": sid, "type": "統合", "detail": f,
@@ -295,7 +295,7 @@ def main():
             out_recs.append([
                 r["src"], r["name"], r["line"], r["op"], r["kind"], r["open"],
                 r["b"], r["e"], r["effB"], r["effE"], r["rel"], r["posNote"],
-                "；".join(r["yearNotes"]) or None, r["lon"], r["lat"], s["sid"],
+                "; ".join(r["yearNotes"]) or None, r["lon"], r["lat"], s["sid"],
             ])
         out_st.append({"id": s["sid"], "r": ids, "f": s["flags"]})
 
